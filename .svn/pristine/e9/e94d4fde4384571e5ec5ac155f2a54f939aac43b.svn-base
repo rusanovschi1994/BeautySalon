@@ -1,0 +1,142 @@
+/*
+ * Copyright (c) 2008, 2012 Oracle and/or its affiliates.
+ * All rights reserved. Use is subject to license terms.
+ *
+ * This file is available and licensed under the following license:
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  - Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the distribution.
+ *  - Neither the name of Oracle Corporation nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.iucosoft.beautysalon.view.authentication;
+
+import com.iucosoft.beautysalon.dao.MyDataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+public class Authenticator {
+
+    private static final Logger LOG = Logger.getLogger(MyDataSource.class.getName());
+    
+    String driver = "com.mysql.jdbc.Driver";
+    String dbURL = "jdbc:mysql://localhost:3306/salon";
+    
+    String username = "user";
+    String password = "Micr0invest";
+    
+    Connection connection;
+    
+    public Authenticator() {
+        
+        try {
+            loadProprieties();
+            loadDriver();
+            loadConnect();
+            
+        } catch (ClassNotFoundException e) {
+            LOG.log(Level.SEVERE, null, e);
+        } catch (SQLException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static MyDataSource getInstance() {
+        return MyDataSourceHolder.INSTANCE;
+    }
+
+    private void loadProprieties() {
+        LOG.info("Proprietatile au fost incarcate cu succes");
+    }
+
+    private void loadDriver() throws ClassNotFoundException {
+        Class.forName(driver);
+        System.out.println("Driverul " + driver + " a fost incarcat cu succes");
+
+    }
+
+    private void loadConnect() throws SQLException {
+        connection = DriverManager.getConnection(dbURL, username, password);
+        LOG.info("Conexiunea la baza de date a fost facuta cu succes");
+        
+    }
+
+    public Connection getConnection() throws SQLException {
+       if(connection == null || connection.isClosed() ){
+           connection = DriverManager.getConnection(dbURL, username, password);
+        }
+        return connection;
+    }
+    
+    private static class MyDataSourceHolder {
+
+        private static final MyDataSource INSTANCE = new MyDataSource();
+    }
+
+
+    public boolean isDbConnection() {
+        try {
+            return !connection.isClosed();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("EROARE");
+        }
+        return false;
+    }
+
+    public boolean isLogin(String login, String password) throws SQLException{
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT * FROM users  WHERE login = ? AND password = ? ";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, login);
+            ps.setString(2, password);
+            
+            rs = ps.executeQuery();
+            if(rs.next()){
+                System.out.println("Eroare la citire");
+                return  true;
+            }else{
+                return  false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }finally{
+            try {
+                ps.close();
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Authenticator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="687.0" prefWidth="825.0" style="-fx-background-color: #d8e8ed;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iucosoft.beautysalon.view.FXMLMainViewController">
+   <top>
+      <HBox prefHeight="72.0" prefWidth="825.0" style="-fx-background-color: #3b5998;" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="83.0" prefWidth="544.0" text="Beauty Salon &quot; Cristina &quot;" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Georgia Bold Italic" size="40.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Label>
+            <VBox prefHeight="69.0" prefWidth="70.0" spacing="12.0">
+               <HBox.margin>
+                  <Insets left="200.0" top="3.0" />
+               </HBox.margin>
+               <children>
+                  <ToggleButton fx:id="btLogOut" mnemonicParsing="false" onAction="#handleLogOutAction" prefHeight="27.0" prefWidth="69.0" text="Log out">
+                     <font>
+                        <Font name="Georgia Italic" size="12.0" />
+                     </font></ToggleButton>
+                  <ToggleButton fx:id="btExit" mnemonicParsing="false" onAction="#handleButtonExitAction" prefHeight="25.0" prefWidth="69.0" text="Exit">
+                     <font>
+                        <Font name="Georgia Italic" size="12.0" />
+                     </font></ToggleButton>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <VBox prefHeight="446.0" prefWidth="110.0" spacing="75.0" style="-fx-background-color: #7d98d1;">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <children>
+            <ToggleButton fx:id="btCustomer" mnemonicParsing="false" onAction="#handleButtonCustomerAction" prefHeight="80.0" prefWidth="100.0" text="CLIENȚI">
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </ToggleButton>
+            <ToggleButton fx:id="btRegistration" mnemonicParsing="false" onAction="#handleButtonRegistrationAction" prefHeight="80.0" prefWidth="100.0" text="ÎNREGISTRARE">
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="11.5" />
+               </font>
+            </ToggleButton>
+            <ToggleButton fx:id="btUser" mnemonicParsing="false" onAction="#handleButtonUserAction" prefHeight="80.0" prefWidth="100.0" text="UTILIZATORI">
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </ToggleButton>
+            <ToggleButton fx:id="btReport" mnemonicParsing="false" onAction="#handleButtonReportAction" prefHeight="80.0" prefWidth="100.0" text="RAPOARTE">
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </ToggleButton>
+         </children>
+         <padding>
+            <Insets top="15.0" />
+         </padding>
+      </VBox>
+   </left>
+   <bottom>
+      <HBox prefHeight="40.0" prefWidth="825.0" style="-fx-background-color: #3b5998;" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lbUserName" prefHeight="50.0" prefWidth="400.0" text="UserName" textFill="WHITE">
+               <font>
+                  <Font name="Georgia Bold Italic" size="12.0" />
+               </font>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="lbDate" prefHeight="40.0" prefWidth="400.0" text="dataTime" textAlignment="RIGHT" textFill="WHITE">
+               <HBox.margin>
+                  <Insets left="80.0" />
+               </HBox.margin>
+               <font>
+                  <Font name="Georgia Bold Italic" size="12.0" />
+               </font>
+               <padding>
+                  <Insets left="230.0" />
+               </padding>
+            </Label>
+         </children></HBox>
+   </bottom>
+   <center>
+      <Label prefHeight="257.0" prefWidth="401.0" text="               BINE AȚI VENIT..." BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Georgia" size="28.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="50.0" right="20.0" />
+         </BorderPane.margin>
+      </Label>
+   </center>
+</BorderPane>

@@ -1,0 +1,86 @@
+package com.iucosoft.beautysalon.fileservice.fileserviceDao;
+
+import com.iucosoft.beautysalon.fileservice.CustomerFileServiceIntf;
+import com.iucosoft.beautysalon.models.Customer;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public class CustomerFileServiceImpl implements CustomerFileServiceIntf {
+
+    @Override
+    public void scrie(String fileName, List<Customer> lista) throws IOException {
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet customersSheet = workbook.createSheet("Customers");
+
+        int rowIndex = 0;
+
+        Row rowTitlu = customersSheet.createRow(rowIndex++);
+        int cellIndexTitlu = 0;
+
+        CellStyle style = getBoldStyle(workbook);
+
+        String[] titles = {"ID", "Numele/Prenumele", "Telefon", "E-mail"};
+
+        for (String title : titles) {
+            setTitleBold(style, rowTitlu, cellIndexTitlu++, title);
+        }
+
+        for (Customer c : lista) {
+
+            int cellIndex = 0;
+            Row row = customersSheet.createRow(rowIndex++);
+
+            row.createCell(cellIndex++).setCellValue(c.getId());
+            row.createCell(cellIndex++).setCellValue(c.getName());
+            row.createCell(cellIndex++).setCellValue(c.getPhoneNumber());
+            row.createCell(cellIndex++).setCellValue(c.getEmail());
+
+            FileOutputStream fos = new FileOutputStream(fileName);
+            workbook.write(fos);
+            fos.close();
+
+        }
+    }
+
+    @Override
+    public List<Customer> citeste(String fileName) throws IOException {
+        return null;
+    }
+
+    private CellStyle getBoldStyle(Workbook workbook) {
+
+        CellStyle style = workbook.createCellStyle();
+        style.setBorderTop((short) 6);
+        style.setBorderBottom((short) 1);
+
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 12);
+        font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+        style.setFont(font);
+
+        return style;
+    }
+
+    private void setTitleBold(CellStyle style, Row rowTitlu, int nr, String val) {
+
+        Cell cell = rowTitlu.createCell(nr);
+        cell.setCellValue(val);
+        cell.setCellStyle(style);
+    }
+
+
+}

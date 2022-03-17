@@ -1,0 +1,240 @@
+package com.iucosoft.beautysalon.fileservice.fileserviceDao;
+
+<<<<<<< .mine
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+=======
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+>>>>>>> .r76
+import com.iucosoft.beautysalon.fileservice.CustomerFileServiceIntf;
+import com.iucosoft.beautysalon.models.Customer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public class CustomerFileServiceImpl implements CustomerFileServiceIntf {
+
+    @Override
+    public void scrie(List<Customer> lista, String fileName) throws IOException {
+        Workbook workbook = new XSSFWorkbook();//1
+        Sheet creditSheet = workbook.createSheet("Clienti");//2
+
+        int rowIndex = 0;
+
+        Row rowTitlu = creditSheet.createRow(rowIndex++);
+        int cellIndexTitlu = 0;
+
+        CellStyle style = getBoldStyle(workbook);
+
+        String[] titles = {"ID", "Nume/Prenume", "Telefon", "E-mail"};
+
+        for (String title : titles) {
+            createRowTitleBold(style, rowTitlu, cellIndexTitlu++, title);
+
+        }
+        for (Customer c : lista) {
+            Row row = creditSheet.createRow(rowIndex++);
+
+            int cellIndex = 0;
+            row.createCell(cellIndex++).setCellValue(c.getId());
+            row.createCell(cellIndex++).setCellValue(c.getName());
+            row.createCell(cellIndex++).setCellValue(c.getPhoneNumber());
+            row.createCell(cellIndex++).setCellValue(c.getEmail());
+        }
+        FileOutputStream fos = new FileOutputStream(fileName);
+        workbook.write(fos);
+        fos.close();
+    }
+
+    @Override
+    public List<Customer> citeste(String fileName) throws IOException {
+        List<Customer> lista = new ArrayList<>();
+
+        FileInputStream fis = new FileInputStream(fileName);
+        // Using XSSF for xlsx format, for xls use HSSF
+        Workbook workbook = new XSSFWorkbook(fis);
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+        Iterator rowIterator = sheet.iterator();
+
+        if (rowIterator.hasNext()) {
+            rowIterator.next(); // sarim peste titluri
+        }
+
+        //citire date din tabela
+        while (rowIterator.hasNext()) {
+            Row row = (Row) rowIterator.next();
+            Iterator cellIterator = row.cellIterator();
+
+            Customer c = new Customer();
+
+            while (cellIterator.hasNext()) {
+
+                Cell cell = (Cell) cellIterator.next();
+                if (cell.getColumnIndex() == 0) {
+                    c.setId((int) cell.getNumericCellValue());
+                } else if (cell.getColumnIndex() == 1) {
+                    c.setName(cell.getStringCellValue());
+                } else if (cell.getColumnIndex() == 2) {
+                    c.setPhoneNumber(cell.getStringCellValue());
+                } else if (cell.getColumnIndex() == 4) {
+                    c.setEmail(cell.getStringCellValue());
+                }
+            }
+            lista.add(c);
+        }
+        fis.close();
+        workbook.close();
+
+        return lista;
+    }
+
+    private CellStyle getBoldStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        style.setBorderTop((short) 6); // double lines border
+        style.setBorderBottom((short) 1); // single line border
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 12);
+        font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+        style.setFont(font);
+
+        return style;
+    }
+
+    private void createRowTitleBold(CellStyle style, Row rowTitlu, int nr, String val) {
+        Cell cell = rowTitlu.createCell(nr);
+        cell.setCellValue(val);
+        cell.setCellStyle(style);
+    }
+<<<<<<< .mine
+
+    @Override
+    public void creaza(List<Customer> list, String fileName) throws IOException {
+        //String FILE = "c:/temp/FirstPdf.pdf";
+        Document document = new Document();
+        
+
+        FileOutputStream fileOS = new FileOutputStream(fileName);
+
+        try {
+            PdfWriter.getInstance(document, fileOS);
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(105);
+            table.setSpacingAfter(11f);
+            table.setSpacingBefore(11f);
+            
+            
+            
+            
+            document.open();
+            addTableHeader(table);
+            
+            document.add(new Paragraph("Lista clienți"));
+            document.add(table);
+            document.close();
+        } catch (DocumentException ex) {
+            Logger.getLogger(CustomerFileServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        Stream.of("ID", "Nume/Prenume", "Telefon", "E-mail")
+                .forEach(columnTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(2);
+                    header.setPhrase(new Phrase(columnTitle));
+                    table.addCell(header);
+                });
+    }
+=======
+
+    @Override
+    public void creaza(List<Customer> lista, String fileName) throws IOException {
+
+        Document document = new Document();
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+            Paragraph paragraph = new Paragraph("Lista de clienti");
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(105);
+            table.setSpacingBefore(11f);
+            table.setSpacingAfter(11f);
+            addTableHeader(table);
+
+            float[] colWidth = {2f, 2f, 2f, 2f};
+            table.setWidths(colWidth);
+
+            for (Customer c : lista) {
+                PdfPCell c1 = new PdfPCell(new Paragraph(Integer.toString(c.getId())));
+                PdfPCell c2 = new PdfPCell(new Paragraph(c.getName()));
+                PdfPCell c3 = new PdfPCell(new Paragraph(c.getPhoneNumber()));
+                PdfPCell c4 = new PdfPCell(new Paragraph(c.getEmail()));
+
+                table.addCell(c1);
+                table.addCell(c2);
+                table.addCell(c3);
+                table.addCell(c4);
+            }
+            document.add(table);
+            document.close();
+            writer.close();
+
+        } catch (DocumentException ex) {
+            Logger.getLogger(CustomerFileServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        Stream.of("ID", "Nume/Prenume", "Telefon", "E-mail")
+                .forEach(columnTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(2);
+                    header.setPhrase(new Phrase(columnTitle));
+                    table.addCell(header);
+                });
+    }
+>>>>>>> .r76
+}

@@ -1,0 +1,348 @@
+package com.iucosoft.beautysalon.view;
+
+import com.iucosoft.beautysalon.dao.CustomerDaoIntf;
+import com.iucosoft.beautysalon.dao.RegistrationDaoIntf;
+import com.iucosoft.beautysalon.dao.UserDaoIntf;
+import com.iucosoft.beautysalon.dao.impl.CustomerDaoImpl;
+import com.iucosoft.beautysalon.dao.impl.RegistrationDaoImpl;
+import com.iucosoft.beautysalon.dao.impl.UserDaoImpl;
+import com.iucosoft.beautysalon.models.Customer;
+import com.iucosoft.beautysalon.models.OperationStatus;
+import com.iucosoft.beautysalon.models.OperationType;
+import com.iucosoft.beautysalon.models.Operation;
+import com.iucosoft.beautysalon.models.User;
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
+/**
+ * FXML Controller class
+ *
+ * @author Rusanovschi
+ */
+public class FXMLRegistrationController implements Initializable, FormularIntf<Operation> {
+
+    @FXML
+    private TextField tfNumberR;
+    @FXML
+    private DatePicker tfDateR;
+    @FXML
+    private ComboBox<OperationType> tfOperationR;
+    @FXML
+    private ComboBox<OperationStatus> tfStatusR;
+    @FXML
+    private TableView<Operation> tableView;
+    @FXML
+    private TableColumn<Operation, Integer> tableId;
+    @FXML
+    private TableColumn<Operation, Enum> tableServiciu;
+    @FXML
+    private TableColumn<Operation, Enum> tableStatus;
+    @FXML
+    private TableColumn<Operation, LocalDate> tableData;
+    @FXML
+    private ComboBox<Customer> tfCustomerName;
+    @FXML
+    private ComboBox<User> tfUserName;
+    @FXML
+    private TableColumn<Operation, Integer> tableCustomers;
+    @FXML
+    private TableColumn<Operation, Integer> tableUsers;
+
+    RegistrationDaoIntf registrationService;
+    ObservableList<Operation> obsL = FXCollections.observableArrayList();
+    String filter = "";
+    ObservableList<Customer> customersItems;
+    ObservableList<User> usersItems;
+
+    CustomerDaoIntf customerService;
+    UserDaoIntf userService;
+    private static final Logger LOG = Logger.getLogger(FXMLRegistrationController.class.getName());
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            cellOperationsValueFactory();
+            registrationService = new RegistrationDaoImpl();
+            customerService = new CustomerDaoImpl();
+            userService = new UserDaoImpl();
+
+            List<Customer> listCustomers = customerService.findAll();
+            List<User> listUsers = userService.findAll();
+
+            customersItems = FXCollections.observableArrayList(listCustomers);
+            usersItems = FXCollections.observableArrayList(listUsers);
+            tfUserName.setItems(usersItems);
+            tfCustomerName.setItems(customersItems);
+
+            try {
+                refreshList();
+                clearForm();
+            } catch (SQLException ex) {
+                Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLRegistrationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void refreshList() throws SQLException {
+        tableView.getItems().clear();
+        obsL = FXCollections.observableArrayList(registrationService.getOperations());
+        tableView.setItems(obsL);
+    }
+
+    @FXML
+    private void handleSearchAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+        try {
+            Operation operation = readForm();
+            registrationService.inregistrare(operation);
+            showMessage(Alert.AlertType.INFORMATION, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Clientul cu id-ul " + operation.getId() + " a fost inregistrat cu succes");
+            clearForm();
+            refreshList();
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Eroare la salvare \n" + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleClearAction(ActionEvent event) {
+        clearForm();
+    }
+
+    @FXML
+    private void handleExcelExportAction(ActionEvent event) {
+    }
+
+    @Override
+    public void fillForm(Operation o) {
+        //       Customer c = o.getCustomer();
+//        User u = o.getUser();
+        OperationType oT = o.getOperationType();
+        OperationStatus oS = o.getOperationStatus();
+        LocalDate lD = o.getLocalDate();
+
+        tfNumberR.setText("" + o.getId());
+//        tfCustomerName.setValue(c);
+//        tfUserR.setValue(u);
+        tfOperationR.setValue(oT);
+        tfStatusR.setValue(oS);
+        tfDateR.setValue(lD);
+    }
+
+    @Override
+    public Operation readForm() {
+        Operation o = new Operation();
+
+        o.setId(Integer.parseInt(tfNumberR.getText()));
+        o.setCustomer(tfCustomerName.getValue());
+        o.setUser(tfUserName.getValue());
+        o.setOperationType(tfOperationR.getValue());
+        o.setOperationStatus(tfStatusR.getValue());
+        o.setLocalDate(tfDateR.getValue());
+
+        return o;
+    }
+
+    @Override
+    public void clearForm() {
+        tfNumberR.setText("0");
+        tfCustomerName.setValue(null);
+        tfUserName.setValue(null);
+        tfOperationR.setValue(OperationType.CLASICA);
+        tfStatusR.setValue(OperationStatus.INREGISTRAT);
+        tfDateR.setValue(LocalDate.now());
+    }
+
+    private void showMessage(Alert.AlertType type, String title, String headerText, String contentText) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
+    }
+
+    @FXML
+    public void handleOnKeyPressed(KeyEvent e) {
+
+        tfCustomerName.setTooltip(new Tooltip());
+        tfCustomerName.getTooltip().setText("Please enter after remove text..");
+
+//        List<Customer> list = new ArrayList<>();
+        ObservableList<Customer> filteredList;
+//        ObservableList<Customer> filteredList = FXCollections.observableArrayList(list);
+
+        customersItems = FXCollections.observableArrayList();
+
+        KeyCode code = e.getCode();
+
+        if (code.isLetterKey()) {
+            filter += e.getText();
+        }
+        if (code == KeyCode.BACK_SPACE && filter.length() > 0) {
+            filter = filter.substring(0, filter.length() - 1);
+            tfCustomerName.getItems().setAll(customersItems);
+        }
+        if (code == KeyCode.ESCAPE) {
+            filter = "";
+        }
+        if (code == KeyCode.ENTER) {
+            filter = "";
+        }
+        if (filter.length() == 0) {
+            try {
+                List<Customer> listCustomers = customerService.findAll();
+
+                customersItems = FXCollections.observableArrayList(listCustomers);
+                tfCustomerName.setItems(customersItems);
+
+            } catch (SQLException ex) {
+                LOG.severe(ex.getMessage());
+            }
+        } else {
+
+            try {
+
+                filteredList = FXCollections.observableArrayList();
+
+//              Stream<Customer> items = tfCustomerName.getItems().stream();
+                String txtUsr = filter.toLowerCase();
+
+                System.out.println("TxtUser = " + txtUsr);
+
+                filteredList.setAll(customerService.findByName(filter));
+                tfCustomerName.show();
+                tfCustomerName.getItems().setAll(filteredList);
+
+            } catch (SQLException ex) {
+                LOG.severe(ex.getMessage());
+            }
+
+        }
+    }
+
+    @FXML
+    private void handleOnHiding(Event e) {
+        filter = "";
+        Customer s = tfCustomerName.getSelectionModel().getSelectedItem();
+
+        if (s != null) {
+            tfCustomerName.getItems().setAll(customersItems);
+            tfCustomerName.getSelectionModel().select(s);
+        }
+    }
+
+    @FXML
+    private void handleOnKeyPressedUser(KeyEvent event) {
+        tfUserName.setTooltip(new Tooltip());
+        tfUserName.getTooltip().setText("Please enter after remove text..");
+
+        ObservableList<User> filteredList;
+        customersItems = FXCollections.observableArrayList();
+
+        KeyCode code = event.getCode();
+
+        if (code.isLetterKey()) {
+            filter += event.getText();
+        }
+        if (code == KeyCode.BACK_SPACE && filter.length() > 0) {
+            filter = filter.substring(0, filter.length() - 1);
+            tfUserName.getItems().setAll(usersItems);
+        }
+        if (code == KeyCode.ESCAPE) {
+            filter = "";
+        }
+        if (code == KeyCode.ENTER) {
+            filter = "";
+        }
+        if (filter.length() == 0) {
+            try {
+                List<User> listUsers = userService.findAll();
+
+                usersItems = FXCollections.observableArrayList(listUsers);
+                tfUserName.setItems(usersItems);
+
+            } catch (SQLException ex) {
+                LOG.severe(ex.getMessage());
+            }
+        } else {
+
+            try {
+
+                filteredList = FXCollections.observableArrayList();
+
+                String txtUsr = filter.toLowerCase();
+
+                System.out.println("TxtUser = " + txtUsr);
+
+                filteredList.setAll(userService.findByName(filter));
+                tfUserName.show();
+                tfUserName.getItems().setAll(filteredList);
+
+            } catch (SQLException ex) {
+                LOG.severe(ex.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void handleOnHidingUser(Event event) {
+        filter = "";
+        User u = tfUserName.getSelectionModel().getSelectedItem();
+
+        if (u != null) {
+            tfUserName.getItems().setAll(usersItems);
+            tfUserName.getSelectionModel().select(u);
+        }
+    }
+
+    private void cellOperationsValueFactory() {
+        // crearea tabelei de date
+        tableId.setCellValueFactory(new PropertyValueFactory<Operation, Integer>("id"));
+        tableCustomers.setCellValueFactory(new PropertyValueFactory<Operation, Integer>("customer"));
+        tableUsers.setCellValueFactory(new PropertyValueFactory<Operation, Integer>("user"));
+        tableServiciu.setCellValueFactory(new PropertyValueFactory<Operation, Enum>("operationType"));
+        tableStatus.setCellValueFactory(new PropertyValueFactory<Operation, Enum>("operationStatus"));
+        tableData.setCellValueFactory(new PropertyValueFactory<Operation, LocalDate>("localDate"));
+
+        //Initierea in comboBox
+        tfOperationR.setItems(FXCollections.observableArrayList(OperationType.values()));
+        tfStatusR.setItems(FXCollections.observableArrayList(OperationStatus.values()));
+    }
+}

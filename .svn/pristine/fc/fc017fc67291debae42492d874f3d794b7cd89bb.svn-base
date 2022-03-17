@@ -1,0 +1,20 @@
+package com.iucosoft.beautysalon.models;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public enum OperationType {
+    ALUNGIRE("Alungire"), CORECTIE("Corectie"), ACOPERIRE("Acoperire"), CLASICA("Clasica");
+
+    private OperationType(String tip) {
+        this.tip = tip;
+    }
+
+    private String tip;
+
+    public String getTip() {
+        return tip;
+    }
+
+}

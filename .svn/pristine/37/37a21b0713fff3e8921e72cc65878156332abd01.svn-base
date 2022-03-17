@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="439.0" prefWidth="394.0" style="-fx-background-color: #d8e8ed;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iucosoft.beautysalon.view.FXMLAuthentificationController">
+   <children>
+      <VBox prefHeight="439.0" prefWidth="394.0">
+         <children>
+            <AnchorPane prefHeight="450.0" prefWidth="394.0">
+               <children>
+                  <TextField fx:id="tfLoghin" layoutX="42.0" layoutY="173.0" prefHeight="41.0" prefWidth="318.0" promptText="..." />
+                  <TextField fx:id="tfPassword" layoutX="42.0" layoutY="281.0" prefHeight="41.0" prefWidth="318.0" promptText="..." />
+                  <ImageView fitHeight="136.0" fitWidth="137.0" layoutX="133.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../../../client-icon-blue.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="42.0" layoutY="139.0" prefHeight="34.0" prefWidth="113.0" text="Utilizator">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="42.0" layoutY="251.0" prefHeight="34.0" prefWidth="113.0" text="Parola">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btConnect" layoutX="109.0" layoutY="363.0" mnemonicParsing="false" onAction="#handleConnectAction" prefHeight="41.0" prefWidth="186.0" style="-fx-background-color: #4cc7ed;" text="Intră">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <effect>
+                        <ColorAdjust brightness="-0.53" contrast="0.57" />
+                     </effect>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="BeautySalon.jnlp">
+  <information>
+    <title>BeautySalon</title>
+    <vendor>Rusanovschi</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="BeautySalon.jar" size="511918" download="eager" />
+    <jar href="lib\itextpdf-5.5.13.1.jar" size="2330916" download="eager" />
+    <jar href="lib\mysql-connector-java-5.1.23-bin.jar" size="834126" download="eager" />
+    <jar href="lib\poi-3.14.jar" size="2528204" download="eager" />
+    <jar href="lib\poi-ooxml-3.14.jar" size="1286511" download="eager" />
+    <jar href="lib\poi-ooxml-schemas-3.14.jar" size="5919795" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="BeautySalon" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="com.iucosoft.beautysalon.JavaMainView"  name="BeautySalon" />
+  <update check="always"/>
+</jnlp>

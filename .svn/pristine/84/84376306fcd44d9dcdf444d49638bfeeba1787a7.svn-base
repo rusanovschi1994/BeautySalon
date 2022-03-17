@@ -1,0 +1,229 @@
+package com.iucosoft.beautysalon.dao.impl;
+
+import com.iucosoft.beautysalon.dao.CustomerDaoIntf;
+import com.iucosoft.beautysalon.dao.MyDataSource;
+import com.iucosoft.beautysalon.dao.RegistrationDaoIntf;
+import com.iucosoft.beautysalon.models.Customer;
+import com.iucosoft.beautysalon.models.Operation;
+import com.iucosoft.beautysalon.models.OperationStatus;
+import com.iucosoft.beautysalon.models.OperationType;
+import com.iucosoft.beautysalon.models.User;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public class RegistrationDaoImpl implements RegistrationDaoIntf {
+
+    private static final Logger LOG = Logger.getLogger(RegistrationDaoImpl.class.getName());
+    private MyDataSource ds = MyDataSource.getInstance();
+    CustomerDaoIntf customerIntf;
+
+    @Override
+    public void inregistrare(Operation o) throws SQLException {
+        
+        String sql = "INSERT INTO operations VALUES(null, ?, ?, ?, ?, ?); " ;
+
+        try (
+                Connection conn = ds.getConnection();
+                PreparedStatement pstat = conn.prepareStatement(sql))    {
+        
+
+            pstat.setInt(1, o.getCustomer().getId());
+            pstat.setInt(2, o.getUser().getId());
+            pstat.setString(3, o.getOperationType().getTip());
+            pstat.setString(4, o.getOperationStatus().getStatut());
+            pstat.setDate(5, java.sql.Date.valueOf(o.getLocalDate()));
+            pstat.executeUpdate();
+
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void modificare(Operation o) throws SQLException {
+
+//         String sql = "UPDATE users SET name = ?, login = ?, password = ?, role = ? WHERE userid =" + u.getId();
+//
+//        try (
+//                Connection conn = ds.getConnection();
+//                PreparedStatement pstat = conn.prepareStatement(sql);) {
+//
+//            pstat.setString(1, u.getName());
+//            pstat.setString(2, u.getLogin());
+//            pstat.setString(3, u.getPassword());
+//            pstat.setString(4, u.getUsersRoles().getRole());
+//            pstat.executeUpdate();
+//        } catch (Exception e) {
+//            LOG.severe(e.toString());
+//            throw new SQLException(e.getMessage());
+//        }
+    }
+
+    @Override
+    public List<Operation> getOperations() throws SQLException {
+        List<Operation> listOperations = new ArrayList<>();
+
+        StringBuilder sqlsb = new StringBuilder("SELECT operid, customerName, userName, opertype, operstatus, dateregistration").
+                append(" FROM operations o").
+                append(" left join customers c ON o.customerID = c.customerid").
+                append(" left join users u ON o.userID = u.userid");
+
+        try (
+                Connection conn = ds.getConnection();
+                Statement stat = conn.createStatement();
+                ResultSet rs = stat.executeQuery(sqlsb.toString());) {
+
+            while (rs.next()) {
+                int opId = rs.getInt(1);
+
+                Customer customer = new Customer();
+                String customerName = rs.getString(2);
+                customer.setName(customerName);
+
+                User user = new User();
+                String userName = rs.getString(3);
+                user.setName(userName);
+
+                OperationType opType = null;
+                String operType = rs.getString(4);
+                switch (operType) {
+                    case "Alungire":
+                        opType = OperationType.ALUNGIRE;
+                        break;
+                    case "Corectie":
+                        opType = OperationType.CORECTIE;
+                        break;
+                    case "Acoperire":
+                        opType = OperationType.ACOPERIRE;
+                        break;
+                    case "Clasica":
+                        opType = OperationType.CLASICA;
+                        break;
+                }
+
+                OperationStatus opStatus = null;
+                String operStatus = rs.getString(5);
+                switch (operStatus) {
+                    case "Inregistrat":
+                        opStatus = OperationStatus.INREGISTRAT;
+                        break;
+                    case "Amanat":
+                        opStatus = OperationStatus.AMANAT;
+                        break;
+                    case "Deservit":
+                        opStatus = OperationStatus.DESERVIT;
+                        break;
+                    case "Anulat":
+                        opStatus = OperationStatus.ANULAT;
+                        break;
+                    case "Absent":
+                        opStatus = OperationStatus.ABSENT;
+                        break;
+                }
+                LocalDate data = rs.getDate(6).toLocalDate();
+
+                Operation operation = new Operation(opId, data, customer, user, opStatus, opType);
+                listOperations.add(operation);
+            }
+
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+
+        return listOperations;
+    }
+
+    @Override
+    public List<Operation> getOperations(LocalDate date) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Operation findById(int id) throws SQLException {
+        StringBuilder sqlSB = new StringBuilder("SELECT operid, ").
+                append("customerName, userName, opertype, operstatus, ").
+                append("dateregistration from operations o ").
+                append("left join customers c ON o.customerid = c.customerid ").
+                append("left join users u ON o.userid = u.userid ").
+                append("where operid = " + id);
+        Operation operation = null;
+
+        try (
+                Connection con = ds.getConnection();
+                Statement stat = con.createStatement();
+                ResultSet rs = stat.executeQuery(sqlSB.toString());) {
+
+            if (rs.next()) {
+
+                Customer customer = new Customer();
+                String nameC = rs.getString(2);
+                customer.setName(nameC);
+
+                User user = new User();
+                String userName = rs.getString(3);
+                user.setName(userName);
+
+                OperationType opType = null;
+                String operType = rs.getString(4);
+                switch (operType) {
+                    case "Alungire":
+                        opType = OperationType.ALUNGIRE;
+                        break;
+                    case "Corectie":
+                        opType = OperationType.CORECTIE;
+                        break;
+                    case "Acoperire":
+                        opType = OperationType.ACOPERIRE;
+                        break;
+                    case "Clasica":
+                        opType = OperationType.CLASICA;
+                        break;
+                }
+
+                OperationStatus opStatus = null;
+                String operStatus = rs.getString(5);
+                switch (operStatus) {
+                    case "Inregistrat":
+                        opStatus = OperationStatus.INREGISTRAT;
+                        break;
+                    case "Amanat":
+                        opStatus = OperationStatus.AMANAT;
+                        break;
+                    case "Deservit":
+                        opStatus = OperationStatus.DESERVIT;
+                        break;
+                    case "Anulat":
+                        opStatus = OperationStatus.ANULAT;
+                        break;
+                    case "Absent":
+                        opStatus = OperationStatus.ABSENT;
+                        break;
+                }
+                LocalDate data = rs.getDate(6).toLocalDate();
+
+                operation = new Operation(id, data, customer, user, opStatus,
+                        opType);
+            } else {
+                throw new Exception("Înregistrarea cu id-ul '" + id + "' nu a"
+                        + " fost găsită în baza de date");
+            }
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+        return operation;
+    }
+}

@@ -1,0 +1,24 @@
+package com.iucosoft.beautysalon.dao;
+
+import com.iucosoft.beautysalon.models.Customer;
+import com.iucosoft.beautysalon.models.Operation;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public interface RegistrationDaoIntf {
+
+    void inregistrare(Operation o) throws SQLException;
+
+    void modificare(Operation o) throws SQLException;
+
+    List<Operation> getOperations() throws SQLException;
+
+    List<Operation> getOperations(LocalDate date) throws SQLException;
+
+    Customer findByName(String nameC) throws SQLException;
+}

@@ -1,0 +1,25 @@
+package com.iucosoft.beautysalon.fileservice;
+
+import com.iucosoft.beautysalon.models.Customer;
+import java.io.IOException;
+import java.util.List;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public interface CustomerFileServiceIntf {
+    
+    //scrie
+    void scrie(List<Customer> lista, String fileName) throws IOException;
+    //citeste
+    List<Customer> citeste(String fileName) throws IOException;
+<<<<<<< .mine
+    //creaza
+    void creaza(List<Customer> list , String fileName) throws IOException;
+=======
+    //creaza
+    void creaza(List<Customer> lista, String fileName) throws IOException;
+    
+>>>>>>> .r76
+}

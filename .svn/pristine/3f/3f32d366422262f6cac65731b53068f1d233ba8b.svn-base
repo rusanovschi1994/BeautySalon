@@ -1,0 +1,64 @@
+package com.iucosoft.beautysalon.view;
+
+import com.iucosoft.beautysalon.JavaMainView;
+import com.iucosoft.beautysalon.view.authentication.Authentication;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+/**
+ * @author Rusanovschi
+ */
+public class FXMLAuthentificationController implements Initializable {
+
+    @FXML
+    private TextField tfLoghin;
+    @FXML
+    private PasswordField tfPassword;
+    @FXML
+    private ImageView imageView;
+
+    public Authentication authentication = new Authentication();
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        if (authentication.isDbConnection()) {
+            System.out.println("A fost efectuata conexiunea la baza de date");
+        } else {
+            System.out.println("Conexiunea esuata");
+        }
+    }
+
+    @FXML
+    private void handleConnectAction(ActionEvent event) {
+        try {
+            if (authentication.isLogin(tfLoghin.getText(), tfPassword.getText())) {
+                ((Node) event.getSource()).getScene().getWindow().hide();
+                Stage primaryStage = new Stage();
+                JavaMainView main = new JavaMainView();
+                try {
+                    main.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(FXMLAuthentificationController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("AUTENTIFICARE CU SUCCES");
+            }
+        } catch (SQLException ex) {
+            System.out.println("AUTENTIFICARE ESUATA");
+            ex.printStackTrace();
+        }
+    }
+}

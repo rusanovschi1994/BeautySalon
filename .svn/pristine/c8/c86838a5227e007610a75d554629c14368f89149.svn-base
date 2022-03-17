@@ -1,0 +1,29 @@
+package com.iucosoft.beautysalon.view;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public interface FormularIntf <T> {
+    
+    void fillForm(T t);
+    T readForm();
+    void clearForm();
+    
+//    private void refreshList() throws SQLException {
+//        listview.getItems().clear();
+//        ObservableList<Customers> uL = FXCollections.observableArrayList(customerDB.findAll());
+//        listview.setItems(uL);
+//    }
+//    
+
+//    
+//    public void alertMessage(String title, String headerText, String contentText){
+//        Alert alert = new Alert(Alert.AlertType.WARNING);
+//        alert.setTitle(title);
+//        alert.setHeaderText(headerText);
+//        alert.setContentText(contentText);
+//        
+//        alert.showAndWait();
+//    }
+}

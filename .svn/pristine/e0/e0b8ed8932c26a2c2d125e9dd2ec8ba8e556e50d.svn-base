@@ -1,0 +1,20 @@
+package com.iucosoft.beautysalon.models;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public enum OperationStatus {
+    INREGISTRAT("Inregistrat"), AMANAT("Amanat"), DESERVIT("Deservit"), ANULAT("Anulat"), ABSENT("Absent"), None("");
+
+    private OperationStatus(String valoare) {
+        statut = valoare;
+    }
+
+    private String statut;
+
+    public String getStatut() {
+        return statut;
+    }
+
+}

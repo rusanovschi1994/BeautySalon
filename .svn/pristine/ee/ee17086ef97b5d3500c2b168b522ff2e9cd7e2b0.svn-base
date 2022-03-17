@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="598.0" prefWidth="612.0" style="-fx-background-color: #d8e8ed;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iucosoft.beautysalon.view.FXMLCustomerController">
+   <children>
+      <GridPane layoutX="43.0" layoutY="59.0" prefHeight="194.0" prefWidth="385.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="113.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="237.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="26.0" minHeight="0.0" prefHeight="0.0" />
+          <RowConstraints maxHeight="51.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label prefHeight="17.0" prefWidth="121.0" text="Nume/Prenume" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font></Label>
+            <Label prefHeight="17.0" prefWidth="120.0" text="Telefon" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font></Label>
+            <Label prefHeight="17.0" prefWidth="126.0" text="E-mail" GridPane.rowIndex="4">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font></Label>
+            <TextField fx:id="tfFName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="tfPhoneN" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="tfEmail" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <HBox prefHeight="23.0" prefWidth="272.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <TextField fx:id="tfId" prefHeight="25.0" prefWidth="207.0" />
+                  <Button mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="25.0" prefWidth="92.0" text="Caută">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font></Button>
+               </children>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
+            </HBox>
+            <Label prefHeight="17.0" prefWidth="75.0" text="id" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font></Label>
+         </children>
+      </GridPane>
+      <HBox layoutX="40.0" layoutY="262.0" prefHeight="39.0" prefWidth="394.0" spacing="40.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#handleAddAction" prefHeight="60.0" prefWidth="70.0" text="Adaugă">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleUpdateAction" prefHeight="60.0" prefWidth="70.0" text="Modifică">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleClearAction" prefHeight="60.0" prefWidth="70.0" text="Șterge">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleDeleteAction" prefHeight="60.0" prefWidth="70.0" text="Delete">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+         </children>
+         <padding>
+            <Insets top="7.0" />
+         </padding>
+      </HBox>
+      <VBox layoutX="517.0" layoutY="323.0" prefHeight="226.0" prefWidth="74.0" spacing="20.0">
+         <children>
+            <Label prefHeight="20.0" prefWidth="74.0" text=" EXPORT" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Bold" size="15.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#handleExcelExportAction" prefHeight="40.0" prefWidth="108.0" text="Excel">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#handlePdfExportAction" prefHeight="39.0" prefWidth="83.0" text="PDF">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <Label alignment="TOP_LEFT" layoutX="40.0" layoutY="17.0" prefHeight="39.0" prefWidth="277.0" text="Înregistrare clienți" textAlignment="CENTER">
+         <font>
+            <Font name="Arial Bold" size="28.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tableview" layoutX="40.0" layoutY="321.0" onMouseClicked="#handleActionCustomersMouseClicked" prefHeight="257.0" prefWidth="466.0">
+        <columns>
+          <TableColumn fx:id="tableId" prefWidth="35.0" text="id" />
+          <TableColumn fx:id="tableName" prefWidth="157.0" text="Nume/Prenume" />
+            <TableColumn fx:id="tablePhone" prefWidth="128.0" text="Telefon" />
+            <TableColumn fx:id="tableEmail" prefWidth="145.0" text="E-mail" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

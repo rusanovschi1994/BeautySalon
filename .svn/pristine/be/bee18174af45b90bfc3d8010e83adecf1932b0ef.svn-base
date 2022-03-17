@@ -1,0 +1,277 @@
+package com.iucosoft.beautysalon.view;
+
+import com.iucosoft.beautysalon.dao.impl.CustomerDaoImpl;
+import com.iucosoft.beautysalon.models.Customer;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import com.iucosoft.beautysalon.dao.CustomerDaoIntf;
+import com.iucosoft.beautysalon.fileservice.CustomerFileServiceIntf;
+import com.iucosoft.beautysalon.fileservice.fileserviceDao.CustomerFileServiceImpl;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+
+/**
+ * FXML Controller class
+ *
+ * @author Rusanovschi
+ */
+public class FXMLCustomerController implements Initializable, FormularIntf<Customer> {
+
+    @FXML
+    public TextField tfFName;
+    @FXML
+    private TextField tfPhoneN;
+    @FXML
+    private TextField tfEmail;
+    @FXML
+    private TextField tfId;
+    @FXML
+    private TableView<Customer> tableview;
+    @FXML
+    private TableColumn<Customer, Integer> tableId;
+    @FXML
+    private TableColumn<Customer, String> tableName;
+    @FXML
+    private TableColumn<Customer, String> tablePhone;
+    @FXML
+    private TableColumn<Customer, String> tableEmail;
+
+    CustomerDaoIntf customerService;
+    CustomerFileServiceIntf customerFilService;
+    ObservableList<Customer> oL = FXCollections.observableArrayList();
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        cellCustomersValueFactory();
+        try {
+            // TODO
+            customerService = new CustomerDaoImpl();
+            customerFilService = new CustomerFileServiceImpl();
+            refreshList();
+            clearForm();
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void refreshList() throws SQLException {
+        tableview.getItems().clear();
+        oL = FXCollections.observableArrayList(customerService.findAll());
+        tableview.setItems(oL);
+    }
+
+    @FXML
+    private void handleSearchAction(ActionEvent event) {
+        int id = Integer.parseInt(tfId.getText());
+        String name = tfFName.getText();
+        Customer customersId = null;
+        List<Customer> customersName = null;
+        try {
+            if (id > 0) {
+                customersId = customerService.findById(id);
+                fillForm(customersId);
+            } else if (name != null) {
+                customersName = customerService.findAll(name, true);
+                showSearchResult(customersName);
+            } else {
+                showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                        "Indicați metoda de cautare <<ID>> SAU <<NUME, PRENUME>>");
+            }
+        } catch (SQLException ex) {
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Clientul cu id-ul, " + id + " nu a fost gasit \n" + ex.getMessage());
+        }
+    }
+
+    private void showSearchResult(List<Customer> customersName) {
+
+        if (customersName.size() == 0) {
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Clientul cu numele, " + tfFName.getText().toUpperCase() + " nu exista");
+        } else if (customersName.size() == 1) {
+            fillForm(customersName.get(0));
+            System.out.println("Clientul a fost gasit");
+        } else {
+            System.out.println("Au fost gasiti mai multi clienti de acelasi tip");
+        }
+    }
+
+    @FXML
+    private void handleAddAction(ActionEvent event) {
+
+        try {
+            Customer customer = readForm();
+            customerService.save(customer);
+            showMessage(Alert.AlertType.INFORMATION, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Clientul cu id-ul " + customer.getId() + " a fost inregistrat cu succes");
+            clearForm();
+            refreshList();
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Eroare la salvare \n" + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUpdateAction(ActionEvent event) {
+        int id = Integer.parseInt(tfId.getText());
+        Customer customerF = readForm();
+
+        try {
+            Customer customerBD = customerService.findById(id);
+            if (customerBD != null) {
+
+                customerBD.setName(customerF.getName());
+                customerBD.setPhoneNumber(customerF.getPhoneNumber());
+                customerBD.setEmail(customerF.getEmail());
+
+                customerService.update(customerBD);
+                showMessage(Alert.AlertType.INFORMATION, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                        "Clientul cu numele *" + customerBD.getName().toUpperCase() + "*, a fost actualizat cu succes");
+                clearForm();
+                refreshList();
+            }
+        } catch (SQLException ex) {
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Eroare la actualizarea clietului \n" + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleClearAction(ActionEvent event) {
+        clearForm();
+    }
+
+    @FXML
+    private void handleDeleteAction(ActionEvent event) {
+        int id = Integer.parseInt(tfId.getText());
+
+        try {
+            Customer customerDB = customerService.findById(id);
+            if (customerDB != null) {
+                customerService.delete(customerDB);
+                showMessage(Alert.AlertType.INFORMATION, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                        "Clientul *" + customerDB.getName().toUpperCase() + " a fost sters din BD");
+                clearForm();
+                refreshList();
+            }
+        } catch (SQLException ex) {
+            showMessage(Alert.AlertType.ERROR, "ATENTIE!!!", "MESAJ INFORMATIONAL",
+                    "Eroare in procesul de stergere \n" + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void fillForm(Customer c) {
+        tfId.setText("" + c.getId());
+
+        tfFName.setText(c.getName());
+        tfPhoneN.setText(c.getPhoneNumber());
+        tfEmail.setText(c.getEmail());
+    }
+
+    @Override
+    public Customer readForm() {
+        Customer c = new Customer();
+
+        c.setId(Integer.parseInt(tfId.getText()));
+        c.setName(tfFName.getText());
+        c.setPhoneNumber(tfPhoneN.getText());
+        c.setEmail(tfEmail.getText());
+
+        return c;
+    }
+
+    @Override
+    public void clearForm() {
+        tfId.setText("0");
+        tfFName.setText("");
+        tfPhoneN.setText("+373");
+        tfEmail.setText("");
+    }
+
+    @FXML
+    private void handleExcelExportAction(ActionEvent event) {
+
+        String fileName = "clienti_" + LocalDate.now().toString() + ".xlsx";
+
+        try {
+            customerFilService.scrie(fileName, oL);
+            showMessage(Alert.AlertType.INFORMATION, "Info", "Message", "Informatia a fost exportata cu succes in" + fileName);
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+            showMessage(Alert.AlertType.INFORMATION, "Info", "Message", "Eroare la export \n" + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePdfExportAction(ActionEvent event) {
+    }
+
+    private void showMessage(Alert.AlertType type, String title, String headerText, String contentText) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
+    }
+
+    private void cellCustomersValueFactory() {
+        tableId.setCellValueFactory(new PropertyValueFactory<Customer, Integer>("id"));
+        tableName.setCellValueFactory(new PropertyValueFactory<Customer, String>("name"));
+        tablePhone.setCellValueFactory(new PropertyValueFactory<Customer, String>("phoneNumber"));
+        tableEmail.setCellValueFactory(new PropertyValueFactory<Customer, String>("email"));
+
+        tableview.setItems(oL);
+    }
+
+//    @FXML
+//    private void handleKeyPressed(KeyEvent event) {
+//
+//        CustomerDaoImpl customerDao = new CustomerDaoImpl();
+//        try {
+//            customerDao.dataBaseName();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FXMLCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        KeyCode code = event.getCode();
+//
+//        switch (code) {
+//            case BACK_SPACE:
+//                break;
+//            case ENTER:
+//                tfFName.setText(tfFName.getText());
+//                break;
+//            default:
+//                java.awt.EventQueue.invokeLater(new Runnable() {
+//                    public void run() {
+//                        String txt = tfFName.getText();
+//                        customerDao.autocomplete(txt);
+//                    }
+//                });
+//        }
+//
+//    }
+
+}

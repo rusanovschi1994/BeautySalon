@@ -1,0 +1,197 @@
+package com.iucosoft.beautysalon.dao.impl;
+
+import com.iucosoft.beautysalon.dao.MyDataSource;
+import com.iucosoft.beautysalon.models.Customer;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import com.iucosoft.beautysalon.dao.CustomerDaoIntf;
+
+/**
+ *
+ * @author Rusanovschi
+ */
+public class CustomerDaoImpl implements CustomerDaoIntf {
+
+    private static final Logger LOG = Logger.getLogger(CustomerDaoImpl.class.getName());
+
+    private MyDataSource ds = MyDataSource.getInstance();
+    
+    @Override
+    public void save(Customer c) throws SQLException {
+        String sql = "INSERT INTO customers VALUES(null, ?, ?, ?)";
+
+        try (
+                Connection conn = ds.getConnection();
+                PreparedStatement pstat = conn.prepareStatement(sql);) {
+
+            pstat.setString(1, c.getName());
+            pstat.setString(2, c.getPhoneNumber());
+            pstat.setString(3, c.getEmail());
+
+            pstat.executeUpdate();
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void update(Customer c) throws SQLException {
+        String sql = "UPDATE customers SET customerName = ?,phone = ?, email = ? WHERE customerid =" + c.getId();
+
+        try (
+                Connection conn = ds.getConnection();
+                PreparedStatement pstat = conn.prepareStatement(sql);) {
+
+            pstat.setString(1, c.getName());
+            pstat.setString(2, c.getPhoneNumber());
+            pstat.setString(3, c.getEmail());
+            pstat.executeUpdate();
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void delete(Customer c) throws SQLException {
+        String sql = "DELETE FROM customers WHERE customerid = " + c.getId();
+
+        try (
+                Connection conn = ds.getConnection();
+                PreparedStatement pstat = conn.prepareStatement(sql);) {
+
+            pstat.executeUpdate();
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Customer findById(int id) throws SQLException {
+
+        String sql = "SELECT * FROM customers WHERE customerid = " + id;
+        Customer customer = null;
+
+        try (
+                Connection conn = ds.getConnection();
+                Statement stat = conn.createStatement();
+                ResultSet rs = stat.executeQuery(sql);) {
+
+            if (rs.next()) {
+
+                String name = rs.getString(2);
+                String phone = rs.getString(3);
+                String email = rs.getString(4);
+
+                customer = new Customer(id, name, phone, email);
+            } else {
+                throw new SQLException(" Customer is NULL ");
+            }
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+
+        return customer;
+    }
+
+    @Override
+    public List<Customer> findByName(String nameC) throws SQLException {
+
+        StringBuilder sbsql = new StringBuilder("SELECT *  FROM customers WHERE customerName").
+                append(" like '" + nameC + "%'");
+              
+
+        List<Customer> list = new ArrayList<>();
+
+        try (
+                Connection conn = ds.getConnection();
+                Statement stat = conn.createStatement();
+                ResultSet rs = stat.executeQuery(sbsql.toString());) {
+            while (rs.next()) {
+
+                int ID = rs.getInt(1);
+                String name = rs.getString(2);
+                String phone = rs.getString(3);
+                String email = rs.getString(4);
+
+                Customer customer = new Customer(ID, name, phone, email);
+                list.add(customer);
+
+            }
+
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Customer> findAll() throws SQLException {
+        String sql = "SELECT * FROM customers";
+        List<Customer> list = new ArrayList<>();
+        try (
+                Connection conn = ds.getConnection();
+                Statement stat = conn.createStatement();
+                ResultSet rs = stat.executeQuery(sql);) {
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String phone = rs.getString(3);
+                String email = rs.getString(4);
+
+                Customer customer = new Customer(id, name, phone, email);
+                list.add(customer);
+            }
+
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Customer> findAll(String nameC, boolean startWith) throws SQLException {
+
+        StringBuilder sbsql = new StringBuilder("SELECT * FROM customers");
+        List<Customer> list = new ArrayList<>();
+
+        if (startWith) {
+            sbsql.append(" WHERE customerName like '" + nameC + "%'");
+        } else if (startWith == false) {
+            sbsql.append(" WHERE customerName='" + nameC + "'");
+        }
+        try (
+                Connection conn = ds.getConnection();
+                Statement stat = conn.createStatement();
+                ResultSet rs = stat.executeQuery(sbsql.toString());) {
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String phone = rs.getString(3);
+                String email = rs.getString(4);
+
+                Customer customer = new Customer(id, name, phone, email);
+                list.add(customer);
+            }
+
+        } catch (Exception e) {
+            LOG.severe(e.toString());
+            throw new SQLException(e.getMessage());
+        }
+        return list;
+    }
+}

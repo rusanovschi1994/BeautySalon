@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="598.0" prefWidth="722.0" style="-fx-background-color: #d8e8ed;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iucosoft.beautysalon.view.FXMLRegistrationController">
+   <children>
+      <GridPane layoutX="45.0" layoutY="59.0" prefHeight="206.0" prefWidth="469.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="118.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="351.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints />
+          <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label prefHeight="30.0" prefWidth="142.0" text="Client" GridPane.rowIndex="2">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <Label prefHeight="38.0" prefWidth="136.0" text="Specialist" GridPane.rowIndex="3">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <HBox prefHeight="23.0" prefWidth="272.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <TextField fx:id="tfNumberR" prefHeight="25.0" prefWidth="258.0" />
+                  <Button mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="25.0" prefWidth="110.0" text="Caută">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
+               </children>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
+            </HBox>
+            <Label prefHeight="38.0" prefWidth="168.0" text="Nr. înregistrare" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font></Label>
+            <Label prefHeight="32.0" prefWidth="148.0" text="Serviciu" GridPane.rowIndex="4">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label prefHeight="34.0" prefWidth="144.0" text="Statut" GridPane.rowIndex="5">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="tfStatusR" prefHeight="25.0" prefWidth="373.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label prefHeight="37.0" prefWidth="134.0" text="Data" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="tfCustomerName" editable="true" onHidden="#handleOnHiding" onKeyPressed="#handleOnKeyPressed" prefHeight="25.0" prefWidth="373.0" promptText="Press enter to select..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="tfUserName" editable="true" onHidden="#handleOnHidingUser" onKeyPressed="#handleOnKeyPressedUser" prefHeight="25.0" prefWidth="371.0" promptText="Press enter to select..." GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <DatePicker fx:id="tfDateR" prefHeight="25.0" prefWidth="385.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <ComboBox fx:id="tfOperationR" prefHeight="25.0" prefWidth="369.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <HBox layoutX="43.0" layoutY="269.0" prefHeight="39.0" prefWidth="469.0" spacing="54.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#handleAddAction" prefHeight="32.0" prefWidth="120.0" text="Înregistrare">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleUpdateAction" prefHeight="32.0" prefWidth="120.0" text="Modifică">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleClearAction" prefHeight="60.0" prefWidth="120.0" text="Curăță">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font></Button>
+         </children>
+         <padding>
+            <Insets top="7.0" />
+         </padding>
+      </HBox>
+      <VBox layoutX="609.0" layoutY="323.0" prefHeight="249.0" prefWidth="74.0" spacing="20.0">
+         <children>
+            <Label prefHeight="17.0" prefWidth="87.0" text="EXPORT" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Bold" size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#handleExcelExportAction" prefHeight="40.0" prefWidth="74.0" text="Excel">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="74.0" text="XML">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="74.0" text="PDF">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+         <padding>
+            <Insets top="4.0" />
+         </padding>
+      </VBox>
+      <TableView fx:id="tableView" layoutX="43.0" layoutY="322.0" onMouseClicked="#handleActionRegistrationMouseClicked" prefHeight="249.0" prefWidth="536.0">
+        <columns>
+          <TableColumn fx:id="tableId" prefWidth="35.0" text="ID" />
+          <TableColumn fx:id="tableCustomers" prefWidth="104.0" text="CLIENT" />
+            <TableColumn fx:id="tableUsers" prefWidth="102.0" text="SPECIALIST" />
+            <TableColumn fx:id="tableServiciu" prefWidth="96.0" text="SERVICIU" />
+            <TableColumn fx:id="tableStatus" prefWidth="108.0" text="STATUT" />
+            <TableColumn fx:id="tableData" prefWidth="90.0" text="DATA" />
+        </columns>
+      </TableView>
+      <Label alignment="TOP_LEFT" layoutX="44.0" layoutY="11.0" prefHeight="39.0" prefWidth="505.0" text="Înregistrare comandă" textAlignment="CENTER">
+         <font>
+            <Font name="Arial Bold" size="28.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="150.0" fitWidth="157.0" layoutX="564.0" layoutY="71.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@image/Registration.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

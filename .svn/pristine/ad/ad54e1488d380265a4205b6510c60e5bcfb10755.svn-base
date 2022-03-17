@@ -1,0 +1,137 @@
+package com.iucosoft.beautysalon.view;
+
+import com.iucosoft.beautysalon.JavaMainView;
+import com.iucosoft.beautysalon.dao.UserDaoIntf;
+import com.iucosoft.beautysalon.dao.impl.UserDaoImpl;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+/**
+ * @author Rusanovschi
+ */
+public class FXMLMainViewController implements Initializable {
+
+    private JavaMainView javaMainView;
+    private ToggleGroup tg;
+    private UserDaoIntf userDaoService;
+
+    @FXML
+    private ToggleButton btCustomer;
+    @FXML
+    private ToggleButton btRegistration;
+    @FXML
+    private ToggleButton btUser;
+    @FXML
+    private ToggleButton btReport;
+    @FXML
+    private Button btExit;
+    @FXML
+    private Button btLogOut;
+    @FXML
+    private Label lbUserName;
+    @FXML
+    private Label lbDate;
+
+    public void setMyMain(JavaMainView myJavaMain) {
+        try {
+            this.javaMainView = myJavaMain;
+            userDaoService = new UserDaoImpl();
+            lbUserName.setText(userDaoService.findByLogin(javaMainView.getUserNameActiv()).getName());
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLMainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        tg = new ToggleGroup();
+        dataTime();
+
+        btCustomer.setToggleGroup(tg);
+        btRegistration.setToggleGroup(tg);
+        btUser.setToggleGroup(tg);
+        btReport.setToggleGroup(tg);
+    }
+
+    @FXML
+    private void handleButtonCustomerAction(ActionEvent event) {
+        javaMainView.showCustomer();
+    }
+
+    @FXML
+    private void handleButtonRegistrationAction(ActionEvent event) {
+        javaMainView.showRegistration();
+    }
+
+    @FXML
+    private void handleButtonUserAction(ActionEvent event) {
+        javaMainView.showUser();
+    }
+
+    @FXML
+    private void handleButtonReportAction(ActionEvent event) {
+        javaMainView.showReport();
+    }
+
+    @FXML
+    private void handleButtonExitAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Ieșire");
+        alert.setHeaderText("ATENȚIE!");
+        alert.setContentText("Ești sigur că vrei să închizi aplicația?");
+
+        ButtonType yes = new ButtonType("Da");
+        ButtonType no = new ButtonType("Nu");
+        alert.getButtonTypes().setAll(yes, no);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == yes) {
+            System.exit(0);
+        } else if (result.get() == no) {
+            alert.close();
+        }
+    }
+
+    private void dataTime() {
+        String date = new Date().toLocaleString();
+        lbDate.setText(date);
+    }
+
+    @FXML
+    private void handleLogOutAction(ActionEvent event) {
+        try {
+            ((Node) event.getSource()).getScene().getWindow().hide();
+            Stage primaryStage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            Pane root = loader.load(getClass().getResource("FXMLAuthentification.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+            System.out.println("A fost efectuat procesul de delogare");
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLMainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}

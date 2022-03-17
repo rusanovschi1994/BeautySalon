@@ -1,0 +1,108 @@
+package com.iucosoft.beautysalon.view;
+
+import com.iucosoft.beautysalon.JavaMainView;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+/**
+ * @author Rusanovschi
+ */
+public class FXMLMainViewController implements Initializable {
+
+    private JavaMainView JavaMainView;
+
+    private ToggleGroup tg;
+
+    @FXML
+    private ToggleButton btCustomer;
+    @FXML
+    private ToggleButton btRegistration;
+    @FXML
+    private ToggleButton btUser;
+    @FXML
+    private ToggleButton btReport;
+    @FXML
+    protected Label btDate;
+    @FXML
+    private ToggleButton btExit;
+    @FXML
+    private ToggleButton btLogOut;
+
+    public void setMyMain(JavaMainView myJavaMain) {
+        this.JavaMainView = myJavaMain;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        tg = new ToggleGroup();
+        dataTime();
+
+        btCustomer.setToggleGroup(tg);
+        btRegistration.setToggleGroup(tg);
+        btUser.setToggleGroup(tg);
+        btReport.setToggleGroup(tg);
+    }
+
+    @FXML
+    private void handleButtonCustomerAction(ActionEvent event) {
+        JavaMainView.showCustomer();
+    }
+
+    @FXML
+    private void handleButtonRegistrationAction(ActionEvent event) {
+        JavaMainView.showRegistration();
+    }
+
+    @FXML
+    private void handleButtonUserAction(ActionEvent event) {
+        JavaMainView.showUser();
+    }
+
+    @FXML
+    private void handleButtonReportAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleButtonExitAction(ActionEvent event) {
+        System.exit(1);
+    }
+
+    private void dataTime() {
+
+        String date = new Date().toLocaleString();
+        btDate.setText(date);
+
+    }
+
+    @FXML
+    private void handleLogOutAction(ActionEvent event) {
+        try {
+            ((Node) event.getSource()).getScene().getWindow().hide();
+            Stage primaryStage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            Pane root = loader.load(getClass().getResource("FXMLAuthentification.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLMainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+}
